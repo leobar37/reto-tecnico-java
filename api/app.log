@@ -1,0 +1,291 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.example:api >---------------------------
+[INFO] Building api 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.4.0:run (default-cli) > test-compile @ api >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ api ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ api ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 18 source files with javac [debug parameters release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ api ---
+[INFO] skip non existing resourceDirectory /Users/leobar37/code/reto-tecnico/api/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ api ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.4.0:run (default-cli) < test-compile @ api <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.4.0:run (default-cli) @ api ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.0)
+
+2025-07-29T22:19:29.592-05:00  INFO 2730 --- [  restartedMain] com.example.api.ApiApplication           : Starting ApiApplication using Java 21.0.5 with PID 2730 (/Users/leobar37/code/reto-tecnico/api/target/classes started by leobar37 in /Users/leobar37/code/reto-tecnico/api)
+2025-07-29T22:19:29.593-05:00  INFO 2730 --- [  restartedMain] com.example.api.ApiApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-07-29T22:19:29.607-05:00  INFO 2730 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-07-29T22:19:29.607-05:00  INFO 2730 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-07-29T22:19:29.878-05:00  INFO 2730 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-29T22:19:29.897-05:00  INFO 2730 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 3 JPA repository interfaces.
+2025-07-29T22:19:30.087-05:00  INFO 2730 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 5002 (http)
+2025-07-29T22:19:30.094-05:00  INFO 2730 --- [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-29T22:19:30.094-05:00  INFO 2730 --- [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2025-07-29T22:19:30.109-05:00  INFO 2730 --- [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-29T22:19:30.110-05:00  INFO 2730 --- [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 503 ms
+2025-07-29T22:19:30.161-05:00  INFO 2730 --- [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-29T22:19:30.182-05:00  INFO 2730 --- [  restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.2.Final
+2025-07-29T22:19:30.193-05:00  INFO 2730 --- [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-29T22:19:30.289-05:00  INFO 2730 --- [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-29T22:19:30.300-05:00  INFO 2730 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-29T22:19:30.386-05:00  INFO 2730 --- [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@30820f6a
+2025-07-29T22:19:30.387-05:00  INFO 2730 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-29T22:19:30.400-05:00  WARN 2730 --- [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-29T22:19:30.406-05:00  INFO 2730 --- [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.13
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-29T22:19:30.708-05:00  INFO 2730 --- [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-29T22:19:30.749-05:00  INFO 2730 --- [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-29T22:19:30.823-05:00  INFO 2730 --- [  restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-29T22:19:31.075-05:00  WARN 2730 --- [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-29T22:19:31.198-05:00  INFO 2730 --- [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-07-29T22:19:31.208-05:00  INFO 2730 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 5002 (http) with context path '/'
+2025-07-29T22:19:31.212-05:00  INFO 2730 --- [  restartedMain] com.example.api.ApiApplication           : Started ApiApplication in 1.739 seconds (process running for 1.888)
+2025-07-29T22:19:46.758-05:00  INFO 2730 --- [nio-5002-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-29T22:19:46.758-05:00  INFO 2730 --- [nio-5002-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-29T22:19:46.759-05:00  INFO 2730 --- [nio-5002-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.cliente_id,
+        r1_0.codigo,
+        r1_0.descripcion,
+        e1_0.reclamo_id,
+        e1_0.id,
+        e1_0.estado,
+        e1_0.fecha_creacion,
+        e1_0.notas,
+        r1_0.fecha_actualizacion,
+        r1_0.fecha_creacion,
+        r1_0.titulo 
+    from
+        reclamos r1_0 
+    left join
+        estado_reclamos e1_0 
+            on r1_0.id=e1_0.reclamo_id 
+    where
+        e1_0.fecha_creacion=(
+            select
+                max(er1_0.fecha_creacion) 
+            from
+                estado_reclamos er1_0 
+            where
+                er1_0.reclamo_id=r1_0.id
+        ) 
+        or e1_0.id is null 
+    order by
+        r1_0.fecha_creacion desc
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.cliente_id,
+        r1_0.codigo,
+        r1_0.descripcion,
+        e1_0.reclamo_id,
+        e1_0.id,
+        e1_0.estado,
+        e1_0.fecha_creacion,
+        e1_0.notas,
+        r1_0.fecha_actualizacion,
+        r1_0.fecha_creacion,
+        r1_0.titulo 
+    from
+        reclamos r1_0 
+    left join
+        estado_reclamos e1_0 
+            on r1_0.id=e1_0.reclamo_id 
+    where
+        e1_0.fecha_creacion=(
+            select
+                max(er1_0.fecha_creacion) 
+            from
+                estado_reclamos er1_0 
+            where
+                er1_0.reclamo_id=r1_0.id
+        ) 
+        or e1_0.id is null 
+    order by
+        r1_0.fecha_creacion desc
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.cliente_id,
+        r1_0.codigo,
+        r1_0.descripcion,
+        e1_0.reclamo_id,
+        e1_0.id,
+        e1_0.estado,
+        e1_0.fecha_creacion,
+        e1_0.notas,
+        r1_0.fecha_actualizacion,
+        r1_0.fecha_creacion,
+        r1_0.titulo 
+    from
+        reclamos r1_0 
+    left join
+        estado_reclamos e1_0 
+            on r1_0.id=e1_0.reclamo_id 
+    where
+        e1_0.fecha_creacion=(
+            select
+                max(er1_0.fecha_creacion) 
+            from
+                estado_reclamos er1_0 
+            where
+                er1_0.reclamo_id=r1_0.id
+        ) 
+        or e1_0.id is null 
+    order by
+        r1_0.fecha_creacion desc
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.cliente_id,
+        r1_0.codigo,
+        r1_0.descripcion,
+        e1_0.reclamo_id,
+        e1_0.id,
+        e1_0.estado,
+        e1_0.fecha_creacion,
+        e1_0.notas,
+        r1_0.fecha_actualizacion,
+        r1_0.fecha_creacion,
+        r1_0.titulo 
+    from
+        reclamos r1_0 
+    left join
+        estado_reclamos e1_0 
+            on r1_0.id=e1_0.reclamo_id 
+    where
+        e1_0.fecha_creacion=(
+            select
+                max(er1_0.fecha_creacion) 
+            from
+                estado_reclamos er1_0 
+            where
+                er1_0.reclamo_id=r1_0.id
+        ) 
+        or e1_0.id is null 
+    order by
+        r1_0.fecha_creacion desc
+Hibernate: 
+    select
+        r1_0.id,
+        r1_0.cliente_id,
+        r1_0.codigo,
+        r1_0.descripcion,
+        e1_0.reclamo_id,
+        e1_0.id,
+        e1_0.estado,
+        e1_0.fecha_creacion,
+        e1_0.notas,
+        r1_0.fecha_actualizacion,
+        r1_0.fecha_creacion,
+        r1_0.titulo 
+    from
+        reclamos r1_0 
+    left join
+        estado_reclamos e1_0 
+            on r1_0.id=e1_0.reclamo_id 
+    where
+        e1_0.fecha_creacion=(
+            select
+                max(er1_0.fecha_creacion) 
+            from
+                estado_reclamos er1_0 
+            where
+                er1_0.reclamo_id=r1_0.id
+        ) 
+        or e1_0.id is null 
+    order by
+        r1_0.fecha_creacion desc
+2025-07-29T23:09:11.695-05:00  INFO 2730 --- [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 23 class path changes (1 addition, 0 deletions, 22 modifications)
+2025-07-29T23:09:11.710-05:00  INFO 2730 --- [       Thread-5] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-29T23:09:11.715-05:00  INFO 2730 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-29T23:09:11.721-05:00  INFO 2730 --- [       Thread-5] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-29T23:09:11.731-05:00  INFO 2730 --- [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-29T23:09:11.734-05:00  INFO 2730 --- [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.0)
+
+2025-07-29T23:09:11.885-05:00  INFO 2730 --- [  restartedMain] com.example.api.ApiApplication           : Starting ApiApplication using Java 21.0.5 with PID 2730 (/Users/leobar37/code/reto-tecnico/api/target/classes started by leobar37 in /Users/leobar37/code/reto-tecnico/api)
+2025-07-29T23:09:11.885-05:00  INFO 2730 --- [  restartedMain] com.example.api.ApiApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-07-29T23:09:11.964-05:00  INFO 2730 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-29T23:09:11.968-05:00  INFO 2730 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 3 JPA repository interfaces.
+2025-07-29T23:09:12.023-05:00  INFO 2730 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 5002 (http)
+2025-07-29T23:09:12.024-05:00  INFO 2730 --- [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-29T23:09:12.024-05:00  INFO 2730 --- [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2025-07-29T23:09:12.029-05:00  INFO 2730 --- [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-29T23:09:12.029-05:00  INFO 2730 --- [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 143 ms
+2025-07-29T23:09:12.050-05:00  INFO 2730 --- [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-29T23:09:12.051-05:00  INFO 2730 --- [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-29T23:09:12.054-05:00  INFO 2730 --- [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-29T23:09:12.054-05:00  INFO 2730 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-07-29T23:09:12.070-05:00  INFO 2730 --- [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@1944023b
+2025-07-29T23:09:12.070-05:00  INFO 2730 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-07-29T23:09:12.074-05:00  WARN 2730 --- [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-29T23:09:12.075-05:00  INFO 2730 --- [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 15.13
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-29T23:09:12.124-05:00  INFO 2730 --- [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-29T23:09:12.175-05:00  INFO 2730 --- [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-29T23:09:12.224-05:00  WARN 2730 --- [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-29T23:09:12.275-05:00  INFO 2730 --- [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-07-29T23:09:12.279-05:00  INFO 2730 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 5002 (http) with context path '/'
+2025-07-29T23:09:12.281-05:00  INFO 2730 --- [  restartedMain] com.example.api.ApiApplication           : Started ApiApplication in 0.406 seconds (process running for 2982.919)
+2025-07-29T23:09:12.282-05:00  INFO 2730 --- [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  49:51 min
+[INFO] Finished at: 2025-07-29T23:09:19-05:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.4.0:run (default-cli) on project api: Process terminated with exit code: 137 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

@@ -1,0 +1,164 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filters-card {
+  margin-bottom: 24px;
+}
+
+.filters-form {
+  .filters-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+
+    mat-form-field {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      
+      button {
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+.claims-table-card {
+  .mat-mdc-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .claims-count {
+      font-size: 0.875rem;
+      color: rgba(0, 0, 0, 0.6);
+      font-weight: normal;
+    }
+    
+    .header-actions {
+      margin-left: auto;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  
+  mat-spinner {
+    margin-bottom: 16px;
+  }
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+  
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    margin-bottom: 16px;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.claims-table {
+  width: 100%;
+  
+  .title-cell {
+    max-width: 300px;
+    
+    .title-content {
+      display: flex;
+      flex-direction: column;
+      
+      .title {
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      
+      .description {
+        font-size: 0.875rem;
+        color: rgba(0, 0, 0, 0.6);
+        line-height: 1.2;
+      }
+    }
+  }
+  
+  .claim-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+  
+  mat-chip {
+    font-size: 0.75rem;
+    min-height: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .filters-form .filters-row {
+    flex-direction: column;
+    align-items: stretch;
+    
+    mat-form-field {
+      min-width: unset;
+    }
+    
+    .filter-actions {
+      justify-content: center;
+      margin-top: 8px;
+    }
+  }
+  
+  .claims-table-card .mat-mdc-card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    
+    .header-actions {
+      margin-left: 0;
+      align-self: center;
+    }
+  }
+  
+  .claims-table {
+    .title-cell {
+      max-width: 200px;
+    }
+  }
+}

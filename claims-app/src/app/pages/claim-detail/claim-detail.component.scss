@@ -1,0 +1,351 @@
+.claim-detail-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+  
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+  }
+  
+  mat-spinner {
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    margin-bottom: 16px;
+  }
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  
+  .header-content {
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+    
+    .back-button {
+      margin-right: 16px;
+      margin-top: 8px;
+    }
+    
+    .title-section {
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 2rem;
+        font-weight: 400;
+      }
+      
+      .subtitle {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: rgba(0, 0, 0, 0.6);
+        
+        span {
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+  
+  .header-actions {
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+}
+
+.status-form-card {
+  margin-bottom: 24px;
+  
+  .status-form-fields {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    margin-bottom: 16px;
+    
+    .full-width {
+      grid-column: 1 / -1;
+    }
+  }
+  
+  .status-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    
+    button mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+.detail-tabs {
+  .tab-content {
+    padding: 24px 0;
+  }
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  
+  .info-card {
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      
+      strong {
+        min-width: 120px;
+        color: rgba(0, 0, 0, 0.87);
+      }
+      
+      span, p {
+        flex: 1;
+        margin: 0;
+      }
+      
+      .description {
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+    }
+  }
+  
+  .summary-card {
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      
+      mat-icon {
+        color: rgba(0, 0, 0, 0.54);
+      }
+      
+      div {
+        display: flex;
+        flex-direction: column;
+        
+        strong {
+          font-size: 1.25rem;
+          color: rgba(0, 0, 0, 0.87);
+        }
+        
+        span {
+          font-size: 0.875rem;
+          color: rgba(0, 0, 0, 0.6);
+        }
+      }
+    }
+  }
+}
+
+.history-card {
+  .no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px;
+    text-align: center;
+    
+    mat-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      margin-bottom: 16px;
+      color: rgba(0, 0, 0, 0.54);
+    }
+    
+    p {
+      color: rgba(0, 0, 0, 0.6);
+      margin: 0;
+    }
+  }
+  
+  .history-item {
+    padding: 16px 0;
+    
+    .history-content {
+      width: 100%;
+      
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        
+        .history-date {
+          font-size: 0.875rem;
+          color: rgba(0, 0, 0, 0.6);
+        }
+      }
+      
+      .history-notes {
+        margin: 8px 0 0 0;
+        color: rgba(0, 0, 0, 0.87);
+        font-style: italic;
+      }
+    }
+  }
+}
+
+.attachments-card {
+  .no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px;
+    text-align: center;
+    
+    mat-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      margin-bottom: 16px;
+      color: rgba(0, 0, 0, 0.54);
+    }
+    
+    p {
+      color: rgba(0, 0, 0, 0.6);
+      margin: 0;
+    }
+  }
+  
+  .attachments-grid {
+    display: grid;
+    gap: 16px;
+    
+    .attachment-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      transition: box-shadow 0.2s ease;
+      
+      &:hover {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .attachment-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+        
+        .file-icon {
+          font-size: 32px;
+          height: 32px;
+          width: 32px;
+          color: rgba(0, 0, 0, 0.54);
+        }
+        
+        .attachment-info {
+          h4 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            font-weight: 500;
+          }
+          
+          .attachment-meta {
+            font-size: 0.875rem;
+            color: rgba(0, 0, 0, 0.6);
+            
+            span {
+              margin: 0 4px;
+            }
+          }
+        }
+      }
+      
+      .attachment-actions {
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+// Global styles for snackbars
+:host ::ng-deep {
+  .success-snackbar {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .error-snackbar {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .info-snackbar {
+    background-color: #2196f3;
+    color: white;
+  }
+}
+
+@media (max-width: 768px) {
+  .claim-detail-container {
+    padding: 16px;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    
+    .header-content {
+      .title-section h1 {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .header-actions {
+      margin-left: 0;
+      align-self: center;
+    }
+  }
+  
+  .status-form-fields {
+    grid-template-columns: 1fr;
+  }
+  
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .status-form-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .history-item .history-content .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,146 @@
+<div class="new-claim-container">
+  <mat-card class="claim-form-card">
+    <mat-card-header>
+      <mat-card-title>Crear Nueva Reclamación</mat-card-title>
+      <mat-card-subtitle>Completa los detalles para crear una nueva reclamación</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="claimForm" (ngSubmit)="onSubmit()" class="claim-form">
+        <div class="form-section">
+          <h3>Información de la Reclamación</h3>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Título *</mat-label>
+            <input matInput formControlName="title" placeholder="Ingresa el título de la reclamación">
+            <mat-error>{{getFieldError('title')}}</mat-error>
+            <mat-hint>Proporciona un título claro y conciso para tu reclamación</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Descripción *</mat-label>
+            <textarea 
+              matInput 
+              formControlName="description" 
+              placeholder="Describe tu reclamación en detalle"
+              rows="4">
+            </textarea>
+            <mat-error>{{getFieldError('description')}}</mat-error>
+            <mat-hint>Proporciona información detallada sobre tu reclamación (mín 10 caracteres)</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>ID de Cliente *</mat-label>
+            <input matInput formControlName="customerId" placeholder="Ingresa el ID de cliente" type="number">
+            <mat-error>{{getFieldError('customerId')}}</mat-error>
+            <mat-hint>Tu número único de identificación de cliente</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="form-section">
+          <h3>Adjuntos</h3>
+          <p class="section-description">
+            Sube documentos de apoyo para tu reclamación (Máx 10MB por archivo)
+          </p>
+
+          <div class="file-upload-area">
+            <input 
+              type="file" 
+              #fileInput 
+              (change)="onFileSelected($event)"
+              multiple
+              accept=".jpg,.jpeg,.png,.gif,.pdf,.txt,.doc,.docx"
+              style="display: none">
+            
+            <button 
+              type="button" 
+              mat-raised-button 
+              color="primary"
+              (click)="fileInput.click()"
+              class="upload-button">
+              <mat-icon>cloud_upload</mat-icon>
+              Seleccionar Archivos
+            </button>
+            
+            <div class="upload-info">
+              <small>Formatos soportados: JPG, PNG, GIF, PDF, TXT, DOC, DOCX</small>
+            </div>
+          </div>
+
+          <div *ngIf="selectedFiles().length > 0" class="selected-files">
+            <h4>Archivos Seleccionados ({{selectedFiles().length}})</h4>
+            <div class="files-list">
+              <mat-chip-set>
+                <mat-chip 
+                  *ngFor="let file of selectedFiles(); let i = index"
+                  class="file-chip">
+                  <mat-icon>{{getFileIcon(file.type)}}</mat-icon>
+                  <span class="file-info">
+                    <span class="file-name">{{file.name}}</span>
+                    <span class="file-size">({{formatFileSize(file.size)}})</span>
+                  </span>
+                  <button 
+                    mat-icon-button 
+                    (click)="removeFile(i)"
+                    class="remove-file-btn"
+                    type="button">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="form-actions">
+          <button 
+            type="button" 
+            mat-button 
+            (click)="onCancel()"
+            [disabled]="loading()">
+            Cancelar
+          </button>
+          
+          <button 
+            type="submit" 
+            mat-raised-button 
+            color="primary"
+            [disabled]="loading() || claimForm.invalid">
+            <mat-icon *ngIf="loading()">
+              <mat-spinner diameter="20"></mat-spinner>
+            </mat-icon>
+            <mat-icon *ngIf="!loading()">save</mat-icon>
+            {{loading() ? 'Creando...' : 'Crear Reclamación'}}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Form Validation Summary -->
+  <mat-card *ngIf="claimForm.invalid && claimForm.touched" class="validation-summary">
+    <mat-card-header>
+      <mat-card-title class="error-title">
+        <mat-icon color="warn">error</mat-icon>
+        Por favor corrige los siguientes errores:
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ul class="error-list">
+        <li *ngIf="claimForm.get('title')?.invalid && claimForm.get('title')?.touched">
+          {{getFieldError('title')}}
+        </li>
+        <li *ngIf="claimForm.get('description')?.invalid && claimForm.get('description')?.touched">
+          {{getFieldError('description')}}
+        </li>
+        <li *ngIf="claimForm.get('customerId')?.invalid && claimForm.get('customerId')?.touched">
+          {{getFieldError('customerId')}}
+        </li>
+      </ul>
+    </mat-card-content>
+  </mat-card>
+</div>

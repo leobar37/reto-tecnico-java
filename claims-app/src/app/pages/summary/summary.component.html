@@ -1,0 +1,210 @@
+<div class="summary-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Resumen de Reclamaciones</h1>
+      <p class="subtitle">Resumen de estadísticas y tendencias de reclamaciones</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="refresh()" [disabled]="loading()">
+        <mat-icon>refresh</mat-icon>
+        Actualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Cargando datos del resumen...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error()" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <h3>{{error()}}</h3>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Summary Content -->
+  <div *ngIf="stats() && !loading() && !error()">
+    <!-- Key Metrics Cards -->
+    <div class="metrics-grid">
+      <mat-card class="metric-card total-claims">
+        <mat-card-content>
+          <div class="metric-content">
+            <div class="metric-icon">
+              <mat-icon>assessment</mat-icon>
+            </div>
+            <div class="metric-info">
+              <h2>{{stats()?.totalClaims}}</h2>
+              <p>Total de Reclamaciones</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="metric-card resolution-time">
+        <mat-card-content>
+          <div class="metric-content">
+            <div class="metric-icon">
+              <mat-icon>schedule</mat-icon>
+            </div>
+            <div class="metric-info">
+              <h2>{{stats()?.averageResolutionDays}}</h2>
+              <p>Promedio Días de Resolución</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="metric-card active-claims">
+        <mat-card-content>
+          <div class="metric-content">
+            <div class="metric-icon">
+              <mat-icon>pending_actions</mat-icon>
+            </div>
+            <div class="metric-info">
+              <h2>{{getActiveClaims()}}</h2>
+              <p>Reclamaciones Activas</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="metric-card resolved-claims">
+        <mat-card-content>
+          <div class="metric-content">
+            <div class="metric-icon">
+              <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="metric-info">
+              <h2>{{getResolvedClaims()}}</h2>
+              <p>Reclamaciones Resueltas</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Charts and Details Section -->
+    <div class="dashboard-grid">
+      <!-- Status Distribution Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Reclamaciones por Estado</mat-card-title>
+          <mat-card-subtitle>Distribución de reclamaciones por diferentes estados</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="status-chart">
+            <div class="chart-visual">
+              <div class="pie-chart">
+                <div 
+                  *ngFor="let status of getObjectKeys(stats()?.claimsByStatus); let i = index"
+                  class="pie-segment"
+                  [style.background-color]="getStatusColor(status)"
+                  [style.flex-grow]="getStatusCount(status)">
+                </div>
+              </div>
+            </div>
+            <div class="chart-legend">
+              <div 
+                *ngFor="let status of getObjectKeys(stats()?.claimsByStatus)"
+                class="legend-item">
+                <div class="legend-color" [style.background-color]="getStatusColor(status)"></div>
+                <div class="legend-info">
+                  <div class="legend-label">
+                    <mat-icon class="status-icon">{{getStatusIcon(status)}}</mat-icon>
+                    <span>{{status}}</span>
+                  </div>
+                  <div class="legend-stats">
+                    <strong>{{getStatusCount(status)}}</strong>
+                    <span>({{getPercentage(getStatusCount(status), stats()?.totalClaims || 0)}}%)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Top Customers -->
+      <mat-card class="customers-card">
+        <mat-card-header>
+          <mat-card-title>Principales Clientes</mat-card-title>
+          <mat-card-subtitle>Clientes con más reclamaciones</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="stats()?.topCustomers?.length === 0" class="no-data">
+            <mat-icon>people</mat-icon>
+            <p>No hay datos de clientes disponibles</p>
+          </div>
+          
+          <div *ngIf="stats()?.topCustomers?.length" class="customers-list">
+            <div 
+              *ngFor="let customer of stats()?.topCustomers; let i = index"
+              class="customer-item">
+              <div class="customer-rank">{{i + 1}}</div>
+              <div class="customer-info">
+                <div class="customer-id">Cliente #{{customer.customerId}}</div>
+                <div class="customer-stats">
+                  <mat-chip color="primary">{{customer.count}} reclamaciones</mat-chip>
+                </div>
+              </div>
+              <div class="customer-percentage">
+                {{getPercentage(customer.count, stats()?.totalClaims || 0)}}%
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Recent Claims -->
+    <mat-card class="recent-claims-card">
+      <mat-card-header>
+        <mat-card-title>Reclamaciones Recientes</mat-card-title>
+        <mat-card-subtitle>Últimas reclamaciones enviadas</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="stats()?.recentClaims?.length === 0" class="no-data">
+          <mat-icon>inbox</mat-icon>
+          <p>No hay reclamaciones recientes disponibles</p>
+        </div>
+
+        <div *ngIf="stats()?.recentClaims?.length" class="recent-claims-list">
+          <div 
+            *ngFor="let claim of stats()?.recentClaims"
+            class="recent-claim-item">
+            <div class="claim-info">
+              <div class="claim-header">
+                <h4>{{claim.titulo}}</h4>
+                <mat-chip [style.background-color]="getStatusColor(claim.estadoActual)" class="status-chip">
+                  {{claim.estadoActual}}
+                </mat-chip>
+              </div>
+              <div class="claim-meta">
+                <span class="claim-code">{{claim.codigo}}</span>
+                <span class="separator">•</span>
+                <span class="claim-customer">Cliente #{{claim.clienteId}}</span>
+                <span class="separator">•</span>
+                <span class="claim-date">{{formatDate(claim.fechaCreacion)}}</span>
+              </div>
+              <p class="claim-description">
+                {{claim.descripcion | slice:0:100}}{{claim.descripcion.length > 100 ? '...' : ''}}
+              </p>
+            </div>
+            <div class="claim-actions">
+              <button mat-icon-button color="primary" [routerLink]="['/claims', claim.id]">
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

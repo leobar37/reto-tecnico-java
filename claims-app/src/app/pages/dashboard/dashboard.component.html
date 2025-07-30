@@ -1,0 +1,158 @@
+<div class="dashboard-container">
+  <mat-card class="filters-card">
+    <mat-card-header>
+      <mat-card-title>Panel de Reclamaciones</mat-card-title>
+      <mat-card-subtitle>Gestiona y filtra tus reclamaciones</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="filterForm" class="filters-form">
+        <div class="filters-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Buscar</mat-label>
+            <input matInput formControlName="searchText" placeholder="Buscar por título, descripción o código">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>ID de Empresa</mat-label>
+            <input matInput formControlName="empresa" placeholder="Filtrar por empresa">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="estado">
+              <mat-option value="">Todos los Estados</mat-option>
+              <mat-option *ngFor="let status of statusOptions" [value]="status">
+                {{status}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="filters-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha de Inicio</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="fechaInicio">
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha de Fin</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="fechaFin">
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+
+          <div class="filter-actions">
+            <button mat-raised-button color="primary" (click)="applyFilters()">
+              <mat-icon>filter_list</mat-icon>
+              Aplicar Filtros
+            </button>
+            <button mat-button (click)="clearFilters()">
+              <mat-icon>clear</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="claims-table-card">
+    <mat-card-header>
+      <mat-card-title>
+        Lista de Reclamaciones
+        <span class="claims-count">({{totalItems}} total)</span>
+      </mat-card-title>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" routerLink="/claims">
+          <mat-icon>add</mat-icon>
+          Nueva Reclamación
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngIf="loading()" class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Cargando reclamaciones...</p>
+      </div>
+
+      <div *ngIf="error()" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{error()}}</p>
+        <button mat-button color="primary" (click)="loadClaims()">Reintentar</button>
+      </div>
+
+      <div *ngIf="!loading() && !error()">
+        <div class="table-container">
+          <table mat-table [dataSource]="pagedClaims()" class="claims-table">
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let claim">{{claim.codigo}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="titulo">
+              <th mat-header-cell *matHeaderCellDef>Título</th>
+              <td mat-cell *matCellDef="let claim" class="title-cell">
+                <div class="title-content">
+                  <span class="title">{{claim.titulo}}</span>
+                  <span class="description">{{claim.descripcion | slice:0:50}}{{claim.descripcion.length > 50 ? '...' : ''}}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="clienteId">
+              <th mat-header-cell *matHeaderCellDef>ID Empresa</th>
+              <td mat-cell *matCellDef="let claim">{{claim.clienteId}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="estadoActual">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let claim">
+                <mat-chip [color]="getStatusColor(claim.estadoActual)">
+                  {{claim.estadoActual}}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="fechaCreacion">
+              <th mat-header-cell *matHeaderCellDef>Creado</th>
+              <td mat-cell *matCellDef="let claim">
+                {{claim.fechaCreacion | date:'short'}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let claim">
+                <button mat-icon-button color="primary" [routerLink]="['/claims', claim.id]">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" [routerLink]="['/claims', claim.id]">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+                class="claim-row" 
+                [routerLink]="['/claims', row.id]"></tr>
+          </table>
+        </div>
+
+        <mat-paginator 
+          [length]="totalItems"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          [pageIndex]="pageIndex"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

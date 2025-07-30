@@ -1,0 +1,239 @@
+<div class="claim-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Cargando detalles de la reclamación...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error()" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <h3>{{error()}}</h3>
+    <button mat-raised-button color="primary" (click)="loadClaimDetail()">
+      <mat-icon>refresh</mat-icon>
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Claim Details -->
+  <div *ngIf="claim() && !loading() && !error()">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-content">
+        <button mat-icon-button (click)="onBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="title-section">
+          <h1>{{claim()?.title}}</h1>
+          <div class="subtitle">
+            <span>Claim #{{claim()?.id}}</span>
+            <mat-chip [color]="getStatusColor(claim()?.currentStatus || '')">
+              {{claim()?.currentStatus}}
+            </mat-chip>
+          </div>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button 
+          mat-raised-button 
+          color="accent" 
+          (click)="toggleStatusForm()"
+          [disabled]="updatingStatus()">
+          <mat-icon>edit</mat-icon>
+          Actualizar Estado
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Update Form -->
+    <mat-card *ngIf="showStatusForm()" class="status-form-card">
+      <mat-card-header>
+        <mat-card-title>Actualizar Estado de la Reclamación</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="statusForm" (ngSubmit)="onStatusUpdate()">
+          <div class="status-form-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Nuevo Estado</mat-label>
+              <mat-select formControlName="estado">
+                <mat-option *ngFor="let status of statusOptions" [value]="status">
+                  {{status}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Notas (Opcional)</mat-label>
+              <textarea 
+                matInput 
+                formControlName="notas" 
+                placeholder="Agrega notas sobre este cambio de estado"
+                rows="3">
+              </textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="status-form-actions">
+            <button type="button" mat-button (click)="toggleStatusForm()">Cancelar</button>
+            <button 
+              type="submit" 
+              mat-raised-button 
+              color="primary"
+              [disabled]="statusForm.invalid || updatingStatus()">
+              <mat-icon *ngIf="updatingStatus()">
+                <mat-spinner diameter="20"></mat-spinner>
+              </mat-icon>
+              <mat-icon *ngIf="!updatingStatus()">save</mat-icon>
+              {{updatingStatus() ? 'Actualizando...' : 'Actualizar Estado'}}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Main Content Tabs -->
+    <mat-tab-group class="detail-tabs">
+      <!-- Overview Tab -->
+      <mat-tab label="Resumen">
+        <div class="tab-content">
+          <div class="overview-grid">
+            <mat-card class="info-card">
+              <mat-card-header>
+                <mat-card-title>Información de la Reclamación</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="info-row">
+                  <strong>Título:</strong>
+                  <span>{{claim()?.title}}</span>
+                </div>
+                <div class="info-row">
+                  <strong>Descripción:</strong>
+                  <p class="description">{{claim()?.description}}</p>
+                </div>
+                <div class="info-row">
+                  <strong>ID de Cliente:</strong>
+                  <span>{{claim()?.customerId}}</span>
+                </div>
+                <div class="info-row">
+                  <strong>Estado Actual:</strong>
+                  <mat-chip [color]="getStatusColor(claim()?.currentStatus || '')">
+                    {{claim()?.currentStatus}}
+                  </mat-chip>
+                </div>
+                <div class="info-row">
+                  <strong>Creado:</strong>
+                  <span>{{formatDate(claim()?.createdAt || '')}}</span>
+                </div>
+                <div class="info-row">
+                  <strong>Última Actualización:</strong>
+                  <span>{{formatDate(claim()?.lastUpdated || '')}}</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="summary-card">
+              <mat-card-header>
+                <mat-card-title>Resumen</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="summary-item">
+                  <mat-icon>history</mat-icon>
+                  <div>
+                    <strong>{{claim()?.statusHistory?.length || 0}}</strong>
+                    <span>Cambios de Estado</span>
+                  </div>
+                </div>
+                <div class="summary-item">
+                  <mat-icon>attach_file</mat-icon>
+                  <div>
+                    <strong>{{claim()?.attachments?.length || 0}}</strong>
+                    <span>Adjuntos</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Status History Tab -->
+      <mat-tab label="Historial de Estados">
+        <div class="tab-content">
+          <mat-card class="history-card">
+            <mat-card-header>
+              <mat-card-title>Historial de Estados</mat-card-title>
+              <mat-card-subtitle>Historial completo de cambios de estado</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngIf="claim()?.statusHistory?.length === 0" class="no-data">
+                <mat-icon>history</mat-icon>
+                <p>No hay historial de estados disponible</p>
+              </div>
+
+              <mat-list *ngIf="claim()?.statusHistory?.length">
+                <mat-list-item *ngFor="let status of claim()?.statusHistory; let last = last" class="history-item">
+                  <div matListItemLine class="history-content">
+                    <div class="history-header">
+                      <mat-chip [color]="getStatusColor(status.status)">
+                        {{status.status}}
+                      </mat-chip>
+                      <span class="history-date">{{formatDate(status.createdAt)}}</span>
+                    </div>
+                    <p *ngIf="status.notes" class="history-notes">{{status.notes}}</p>
+                  </div>
+                  <mat-divider *ngIf="!last"></mat-divider>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Attachments Tab -->
+      <mat-tab label="Adjuntos">
+        <div class="tab-content">
+          <mat-card class="attachments-card">
+            <mat-card-header>
+              <mat-card-title>Adjuntos</mat-card-title>
+              <mat-card-subtitle>Archivos adjuntos a esta reclamación</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngIf="claim()?.attachments?.length === 0" class="no-data">
+                <mat-icon>attach_file</mat-icon>
+                <p>No hay adjuntos disponibles</p>
+              </div>
+
+              <div *ngIf="claim()?.attachments?.length" class="attachments-grid">
+                <div 
+                  *ngFor="let attachment of claim()?.attachments" 
+                  class="attachment-item">
+                  <div class="attachment-header">
+                    <mat-icon class="file-icon">{{getFileIcon(attachment.fileType)}}</mat-icon>
+                    <div class="attachment-info">
+                      <h4>{{attachment.fileName}}</h4>
+                      <div class="attachment-meta">
+                        <span>{{formatFileSize(attachment.fileSize)}}</span>
+                        <span>•</span>
+                        <span>{{formatDate(attachment.uploadedAt)}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="attachment-actions">
+                    <button 
+                      mat-icon-button 
+                      color="primary"
+                      (click)="downloadAttachment(attachment)"
+                      title="Descargar">
+                      <mat-icon>download</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
