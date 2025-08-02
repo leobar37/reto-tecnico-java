@@ -56,11 +56,23 @@
           <div class="status-form-fields">
             <mat-form-field appearance="outline">
               <mat-label>Nuevo Estado</mat-label>
-              <mat-select formControlName="estado">
+              <mat-select formControlName="status">
                 <mat-option *ngFor="let status of statusOptions" [value]="status">
                   {{status}}
                 </mat-option>
               </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email del Asesor (Opcional)</mat-label>
+              <input 
+                matInput 
+                type="email"
+                formControlName="asesor_email" 
+                placeholder="asesor@ejemplo.com">
+              <mat-error *ngIf="statusForm.get('asesor_email')?.hasError('email')">
+                Por favor ingresa un email válido
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">

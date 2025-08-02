@@ -26,6 +26,7 @@ export class MainLayoutComponent {
   menuItems = [
     { label: 'Panel de Control', route: '/dashboard', icon: 'dashboard' },
     { label: 'Nueva Reclamación', route: '/claims', icon: 'add_circle' },
-    { label: 'Resumen', route: '/summary', icon: 'summarize' }
+    { label: 'Resumen', route: '/summary', icon: 'summarize' },
+    { label: 'Gráficos', route: '/charts', icon: 'bar_chart' }
   ];
 }

@@ -47,6 +47,23 @@
     
     .header-actions {
       margin-left: auto;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      
+      .export-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        mat-spinner {
+          margin-right: 4px;
+        }
+        
+        &:disabled {
+          opacity: 0.6;
+        }
+      }
     }
   }
 }
@@ -153,6 +170,13 @@
     .header-actions {
       margin-left: 0;
       align-self: center;
+      flex-direction: column;
+      gap: 8px;
+      
+      button {
+        width: 100%;
+        max-width: 200px;
+      }
     }
   }
   

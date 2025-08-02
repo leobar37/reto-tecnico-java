@@ -139,22 +139,22 @@ export class SummaryComponent implements OnInit {
 
   getStatusColor(status: string): string {
     switch (status) {
-      case ClaimStatusEnum.CREADO: return '#2196F3';
+      case ClaimStatusEnum.INGRESADO: return '#2196F3';
       case ClaimStatusEnum.EN_PROCESO: return '#FF9800';
       case ClaimStatusEnum.RESUELTO: return '#4CAF50';
       case ClaimStatusEnum.CERRADO: return '#9E9E9E';
-      case ClaimStatusEnum.CANCELADO: return '#F44336';
+      case ClaimStatusEnum.RECHAZADO: return '#F44336';
       default: return '#607D8B';
     }
   }
 
   getStatusIcon(status: string): string {
     switch (status) {
-      case ClaimStatusEnum.CREADO: return 'fiber_new';
+      case ClaimStatusEnum.INGRESADO: return 'fiber_new';
       case ClaimStatusEnum.EN_PROCESO: return 'pending';
       case ClaimStatusEnum.RESUELTO: return 'check_circle';
       case ClaimStatusEnum.CERRADO: return 'lock';
-      case ClaimStatusEnum.CANCELADO: return 'cancel';
+      case ClaimStatusEnum.RECHAZADO: return 'cancel';
       default: return 'help';
     }
   }

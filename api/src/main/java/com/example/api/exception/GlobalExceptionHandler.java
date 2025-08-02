@@ -72,6 +72,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex, HttpServletRequest request) {
         
+        // Don't handle SpringDoc/Swagger related endpoints
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/api-docs") || requestURI.startsWith("/swagger-ui")) {
+            throw new RuntimeException(ex); // Re-throw to let SpringDoc handle it
+        }
+        
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

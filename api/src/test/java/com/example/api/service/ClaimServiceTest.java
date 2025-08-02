@@ -11,6 +11,7 @@ import com.example.api.exception.ClaimNotFoundException;
 import com.example.api.repository.ReclamoRepository;
 import com.example.api.repository.EstadoReclamoRepository;
 import com.example.api.repository.AdjuntoReclamoRepository;
+import com.example.api.enums.EstadoReclamoEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,7 +72,7 @@ class ClaimServiceTest {
         estadoReclamo = EstadoReclamo.builder()
                 .id(1L)
                 .reclamo(reclamo)
-                .estado("Ingresado")
+                .estado(EstadoReclamoEnum.INGRESADO)
                 .notas("Reclamo creado exitosamente")
                 .fechaCreacion(LocalDateTime.now())
                 .build();
@@ -89,7 +90,7 @@ class ClaimServiceTest {
         assertThat(result.title()).isEqualTo("Test Claim");
         assertThat(result.description()).isEqualTo("Test Description");
         assertThat(result.customerId()).isEqualTo(123L);
-        assertThat(result.currentStatus()).isEqualTo("Ingresado");
+        assertThat(result.currentStatus()).isEqualTo(EstadoReclamoEnum.INGRESADO);
 
         verify(reclamoRepository).save(argThat(r -> 
             r.getTitulo().equals("Test Claim") &&
@@ -98,7 +99,7 @@ class ClaimServiceTest {
             r.getCodigo().startsWith("CLM-")
         ));
         verify(estadoReclamoRepository).save(argThat(e ->
-            e.getEstado().equals("Ingresado") &&
+            e.getEstado().equals(EstadoReclamoEnum.INGRESADO) &&
             e.getNotas().equals("Reclamo creado exitosamente")
         ));
     }
@@ -114,13 +115,13 @@ class ClaimServiceTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).id()).isEqualTo(1L);
-        assertThat(result.get(0).currentStatus()).isEqualTo("Ingresado");
+        assertThat(result.get(0).currentStatus()).isEqualTo(EstadoReclamoEnum.INGRESADO);
 
         verify(reclamoRepository).findAllWithLastStatus();
     }
 
     @Test
-    void getAllClaimsWithLastStatus_WithoutStatus_ShouldReturnDefaultStatus() {
+    void getAllClaimsWithLastStatus_WithoutStatus_ShouldReturnDefaultIngresadoStatus() {
         reclamo.setEstados(Arrays.asList());
         List<Reclamo> reclamos = Arrays.asList(reclamo);
 
@@ -129,7 +130,7 @@ class ClaimServiceTest {
         List<ClaimResponse> result = claimService.getAllClaimsWithLastStatus();
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).currentStatus()).isEqualTo("Sin estado");
+        assertThat(result.get(0).currentStatus()).isEqualTo(EstadoReclamoEnum.INGRESADO);
     }
 
     @Test
@@ -170,7 +171,7 @@ class ClaimServiceTest {
 
     @Test
     void addStatusToClaim_ShouldAddStatusSuccessfully() {
-        ClaimStatusRequest statusRequest = new ClaimStatusRequest("En Proceso", "Revisando documentos");
+        ClaimStatusRequest statusRequest = new ClaimStatusRequest(EstadoReclamoEnum.EN_PROCESO, "Revisando documentos", "test@example.com");
 
         when(reclamoRepository.findById(1L)).thenReturn(Optional.of(reclamo));
 
@@ -178,7 +179,7 @@ class ClaimServiceTest {
 
         verify(reclamoRepository).findById(1L);
         verify(estadoReclamoRepository).save(argThat(estado ->
-            estado.getEstado().equals("En Proceso") &&
+            estado.getEstado().equals(EstadoReclamoEnum.EN_PROCESO) &&
             estado.getNotas().equals("Revisando documentos") &&
             estado.getReclamo().equals(reclamo)
         ));
@@ -186,7 +187,7 @@ class ClaimServiceTest {
 
     @Test
     void addStatusToClaim_ClaimNotFound_ShouldThrowException() {
-        ClaimStatusRequest statusRequest = new ClaimStatusRequest("En Proceso", "Revisando documentos");
+        ClaimStatusRequest statusRequest = new ClaimStatusRequest(EstadoReclamoEnum.EN_PROCESO, "Revisando documentos", "test@example.com");
 
         when(reclamoRepository.findById(1L)).thenReturn(Optional.empty());
 

@@ -4,17 +4,21 @@ export interface ClaimStatus {
   estado: string;
   notas?: string;
   fechaCreacion: string;
+  asesor_email?: string;
 }
 
 export interface ClaimStatusRequest {
-  estado: string;
+  status: string;
   notas?: string;
+  asesor_email?: string;
 }
 
 export enum ClaimStatusEnum {
-  CREADO = 'CREADO',
-  EN_PROCESO = 'EN_PROCESO',
-  RESUELTO = 'RESUELTO',
-  CERRADO = 'CERRADO',
-  CANCELADO = 'CANCELADO'
+  INGRESADO = 'Ingresado',
+  EN_PROCESO = 'En Proceso',
+  RESUELTO = 'Resuelto',
+  CERRADO = 'Cerrado',
+  RECHAZADO = 'Rechazado',
+  ESCALADO = 'Escalado',
+  PENDIENTE_INFORMACION = 'Pendiente Información'
 }

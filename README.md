@@ -243,17 +243,18 @@ La aplicación está desplegada en Google Cloud Platform y está disponible en l
 
 ### 🔗 URLs de Producción
 
-- **🌐 Frontend (Angular)**: [https://storage.googleapis.com/meta-episode-466920-h4-claims-frontend-manual/index.html](https://storage.googleapis.com/meta-episode-466920-h4-claims-frontend-manual/index.html)
-- **⚡ API REST (Spring Boot)**: Desplegada en Google Cloud Run
+- **🌐 Frontend (Angular)**: [https://claims-frontend-272736630388.us-central1.run.app](https://claims-frontend-272736630388.us-central1.run.app)
+- **⚡ API REST (Spring Boot)**: [https://claims-api-272736630388.us-central1.run.app](https://claims-api-272736630388.us-central1.run.app)
+- **📚 API Documentation**: [https://claims-api-272736630388.us-central1.run.app/swagger-ui/index.html](https://claims-api-272736630388.us-central1.run.app/swagger-ui/index.html)
 - **🗄️ Base de datos**: PostgreSQL en Google Cloud SQL
 
 ### 🏗️ Infraestructura de Despliegue
 
-- **Frontend**: Hospedado en Google Cloud Storage con configuración web estática
-- **Backend**: Containerizado y desplegado en Google Cloud Run  
+- **Frontend**: Containerizado con Angular y Nginx, desplegado en Google Cloud Run
+- **Backend**: Containerizado con Spring Boot, desplegado en Google Cloud Run  
 - **Base de datos**: Google Cloud SQL con PostgreSQL 15
-- **Registro de imágenes**: Google Artifact Registry
-- **CDN**: Google Cloud Storage con CORS configurado
+- **Registro de imágenes**: Google Container Registry (GCR)
+- **Auto-scaling**: Ambos servicios escalan automáticamente según demanda
 
 ### 🚀 Características del Despliegue
 

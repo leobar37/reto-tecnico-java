@@ -18,5 +18,9 @@ export const routes: Routes = [
     path: 'summary', 
     loadComponent: () => import('./pages/summary/summary.component').then(m => m.SummaryComponent)
   },
+  { 
+    path: 'charts', 
+    loadComponent: () => import('./pages/claims-chart/claims-chart').then(m => m.ClaimsChartComponent)
+  },
   { path: '**', redirectTo: '/dashboard' }
 ];

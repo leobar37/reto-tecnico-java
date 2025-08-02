@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { 
   ClaimDetailResponse, 
   CreateClaimRequest, 
@@ -17,8 +18,29 @@ export class ClaimApiService {
   
   constructor(private http: HttpClient) {}
 
-  getClaims(): Observable<ClaimResponse[]> {
-    return this.http.get<ClaimResponse[]>(this.baseUrl);
+  getClaims(status?: string, search?: string): Observable<ClaimResponse[]> {
+    let params = new HttpParams();
+    
+    if (status) {
+      params = params.set('status', status);
+    }
+    
+    if (search) {
+      params = params.set('search', search);
+    }
+    
+    return this.http.get<any[]>(this.baseUrl, { params }).pipe(
+      map(claims => claims.map(claim => ({
+        id: claim.id,
+        codigo: claim.codigo,
+        titulo: claim.titulo,
+        descripcion: claim.description,
+        clienteId: claim.customerId,
+        estadoActual: claim.currentStatus,
+        fechaCreacion: claim.createdAt,
+        fechaActualizacion: claim.lastUpdated
+      })))
+    );
   }
 
   getClaimById(id: number): Observable<ClaimDetailResponse> {
@@ -44,7 +66,7 @@ export class ClaimApiService {
   uploadAttachment(id: number, file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-    
+  
     return this.http.post<any>(`${this.baseUrl}/${id}/attachments`, formData);
   }
 }

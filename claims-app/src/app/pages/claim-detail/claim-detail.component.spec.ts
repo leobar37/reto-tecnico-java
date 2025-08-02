@@ -34,13 +34,13 @@ describe('ClaimDetailComponent', () => {
     title: 'Test Claim',
     description: 'Test Description',
     customerId: 123,
-    currentStatus: ClaimStatusEnum.CREADO,
+    currentStatus: ClaimStatusEnum.INGRESADO,
     createdAt: '2024-01-01T00:00:00Z',
     lastUpdated: '2024-01-01T00:00:00Z',
     statusHistory: [
       {
         id: 1,
-        status: ClaimStatusEnum.CREADO,
+        status: ClaimStatusEnum.INGRESADO,
         notes: 'Claim created',
         createdAt: '2024-01-01T00:00:00Z'
       }
@@ -139,11 +139,11 @@ describe('ClaimDetailComponent', () => {
 
   describe('getStatusColor', () => {
     it('should return correct colors for different statuses', () => {
-      expect(component.getStatusColor(ClaimStatusEnum.CREADO)).toBe('primary');
+      expect(component.getStatusColor(ClaimStatusEnum.INGRESADO)).toBe('primary');
       expect(component.getStatusColor(ClaimStatusEnum.EN_PROCESO)).toBe('accent');
       expect(component.getStatusColor(ClaimStatusEnum.RESUELTO)).toBe('primary');
       expect(component.getStatusColor(ClaimStatusEnum.CERRADO)).toBe('');
-      expect(component.getStatusColor(ClaimStatusEnum.CANCELADO)).toBe('warn');
+      expect(component.getStatusColor(ClaimStatusEnum.RECHAZADO)).toBe('warn');
       expect(component.getStatusColor('UNKNOWN')).toBe('');
     });
   });
@@ -190,7 +190,7 @@ describe('ClaimDetailComponent', () => {
       await component.onStatusUpdate();
 
       const expectedStatusData: ClaimStatusRequest = {
-        estado: ClaimStatusEnum.EN_PROCESO,
+        status: ClaimStatusEnum.EN_PROCESO,
         notas: 'Processing the claim'
       };
 
@@ -212,7 +212,7 @@ describe('ClaimDetailComponent', () => {
       await component.onStatusUpdate();
 
       const expectedStatusData: ClaimStatusRequest = {
-        estado: ClaimStatusEnum.EN_PROCESO,
+        status: ClaimStatusEnum.EN_PROCESO,
         notas: undefined
       };
 

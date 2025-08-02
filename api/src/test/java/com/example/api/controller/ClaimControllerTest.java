@@ -6,6 +6,7 @@ import com.example.api.dto.ClaimResponse;
 import com.example.api.dto.ClaimDetailResponse;
 import com.example.api.exception.ClaimNotFoundException;
 import com.example.api.service.ClaimService;
+import com.example.api.enums.EstadoReclamoEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class ClaimControllerTest {
                 "Test Claim",
                 "Test Description",
                 123L,
-                "Ingresado",
+                EstadoReclamoEnum.INGRESADO,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -62,7 +63,7 @@ class ClaimControllerTest {
         List<ClaimDetailResponse.ClaimStatusHistory> statusHistory = Arrays.asList(
                 new ClaimDetailResponse.ClaimStatusHistory(
                         1L,
-                        "Ingresado",
+                        EstadoReclamoEnum.INGRESADO,
                         "Reclamo creado exitosamente",
                         LocalDateTime.now()
                 )
@@ -83,7 +84,7 @@ class ClaimControllerTest {
                 "Test Claim",
                 "Test Description",
                 123L,
-                "Ingresado",
+                EstadoReclamoEnum.INGRESADO,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 statusHistory,
@@ -194,7 +195,7 @@ class ClaimControllerTest {
 
     @Test
     void updateClaimStatus_ValidRequest_ShouldReturnOk() throws Exception {
-        ClaimStatusRequest statusRequest = new ClaimStatusRequest("En Proceso", "Revisando documentos");
+        ClaimStatusRequest statusRequest = new ClaimStatusRequest(EstadoReclamoEnum.EN_PROCESO, "Revisando documentos", "test@example.com");
 
         mockMvc.perform(post("/api/claims/1/status")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +207,7 @@ class ClaimControllerTest {
 
     @Test
     void updateClaimStatus_NonExistingClaim_ShouldReturnNotFound() throws Exception {
-        ClaimStatusRequest statusRequest = new ClaimStatusRequest("En Proceso", "Revisando documentos");
+        ClaimStatusRequest statusRequest = new ClaimStatusRequest(EstadoReclamoEnum.EN_PROCESO, "Revisando documentos", "test@example.com");
         doThrow(new ClaimNotFoundException(999L)).when(claimService).addStatusToClaim(eq(999L), any());
 
         mockMvc.perform(post("/api/claims/999/status")
@@ -219,7 +220,7 @@ class ClaimControllerTest {
 
     @Test
     void updateClaimStatus_InvalidRequest_MissingStatus_ShouldReturnBadRequest() throws Exception {
-        ClaimStatusRequest invalidRequest = new ClaimStatusRequest("", "Some notes");
+        ClaimStatusRequest invalidRequest = new ClaimStatusRequest(null, "Some notes", "test@example.com");
 
         mockMvc.perform(post("/api/claims/1/status")
                         .contentType(MediaType.APPLICATION_JSON)

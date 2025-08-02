@@ -10,7 +10,6 @@ DB_NAME="claims"
 DB_USER="claims_user"
 DB_PASSWORD="ClaimsApp2024!SecurePassword"
 REGISTRY_NAME="claims-app"
-BUCKET_NAME="${PROJECT_ID}-claims-frontend-manual"
 
 echo "🚀 Starting manual deployment for Claims App..."
 
@@ -68,27 +67,7 @@ DB_IP=$(gcloud sql instances describe $DB_INSTANCE --project=$PROJECT_ID --forma
 
 echo "🗄️ Database IP: $DB_IP"
 
-# Create Cloud Storage bucket
-echo "🪣 Creating Cloud Storage bucket..."
-if ! gsutil ls -b gs://$BUCKET_NAME 2>/dev/null; then
-    gsutil mb -l $REGION gs://$BUCKET_NAME
-    gsutil web set -m index.html -e index.html gs://$BUCKET_NAME
-    gsutil iam ch allUsers:objectViewer gs://$BUCKET_NAME
-fi
-
-# Set CORS configuration for the bucket
-echo "🔧 Setting up CORS configuration..."
-cat > cors.json << 'EOF'
-[
-  {
-    "origin": ["*"],
-    "method": ["GET", "HEAD"],
-    "responseHeader": ["Content-Type", "Range"],
-    "maxAgeSeconds": 3600
-  }
-]
-EOF
-gsutil cors set cors.json gs://$BUCKET_NAME
+# Note: Cloud Storage bucket removed - using Cloud Run for frontend deployment
 
 # Configure Docker for Artifact Registry
 echo "🐳 Configuring Docker..."
@@ -97,7 +76,7 @@ gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
 # Build and push API container
 echo "🏗️ Building and pushing API container..."
 cd ../api
-docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/api:latest .
+docker build --platform linux/amd64 -t $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/api:latest .
 docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/api:latest
 
 # Deploy to Cloud Run
@@ -120,7 +99,7 @@ gcloud run deploy claims-api \
 API_URL=$(gcloud run services describe claims-api --region=$REGION --project=$PROJECT_ID --format="value(status.url)")
 
 # Build and deploy frontend
-echo "🌐 Building and deploying frontend..."
+echo "🌐 Building and deploying frontend to Cloud Run..."
 cd ../claims-app
 
 # Check if Angular environment file exists and update API endpoint
@@ -132,27 +111,34 @@ if [ -f "src/environments/environment.ts" ]; then
     sed -i.tmp "s|apiUrl:.*|apiUrl: '$API_URL',|g" src/environments/environment.ts || true
 fi
 
-# Install dependencies and build
-if command -v pnpm &> /dev/null; then
-    pnpm install
-    pnpm run build --base-href="https://storage.googleapis.com/$BUCKET_NAME/"
-else
-    npm install
-    npm run build --base-href="https://storage.googleapis.com/$BUCKET_NAME/"
-fi
+# Build and push frontend container
+echo "🏗️ Building and pushing frontend container..."
+docker build --platform linux/amd64 -t $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/frontend:latest .
+docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/frontend:latest
 
-# Upload to Cloud Storage
-gsutil -m cp -r dist/claims-app/browser/* gs://$BUCKET_NAME/
+# Deploy frontend to Cloud Run
+echo "☁️ Deploying frontend to Cloud Run..."
+gcloud run deploy claims-frontend \
+    --image $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/frontend:latest \
+    --region $REGION \
+    --platform managed \
+    --allow-unauthenticated \
+    --port 8080 \
+    --memory 256Mi \
+    --cpu 1 \
+    --max-instances 3 \
+    --concurrency 80 \
+    --cpu-throttling \
+    --project=$PROJECT_ID
 
-# Set correct content types for files
-echo "📝 Setting content types for files..."
-gsutil ls gs://$BUCKET_NAME/ | grep '\.js$' | xargs -I {} gsutil setmeta -h "Content-Type:text/javascript" {}
-gsutil ls gs://$BUCKET_NAME/ | grep '\.css$' | xargs -I {} gsutil setmeta -h "Content-Type:text/css" {}
+# Get frontend Cloud Run URL
+FRONTEND_URL=$(gcloud run services describe claims-frontend --region=$REGION --project=$PROJECT_ID --format="value(status.url)")
 
 echo "✅ Deployment completed successfully!"
 echo ""
 echo "🔗 API URL: $API_URL"
-echo "🔗 Frontend URL: https://storage.googleapis.com/$BUCKET_NAME/index.html"
+echo "🔗 Frontend URL: $FRONTEND_URL"
 echo "🗄️ Database: $DB_IP:5432/$DB_NAME"
 echo ""
 echo "💡 Your Claims App is now deployed and ready to use!"
+echo "📱 Both frontend and API are running as Cloud Run services"

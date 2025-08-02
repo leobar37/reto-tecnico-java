@@ -1,15 +1,13 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ClaimApiService } from './claim-api.service';
-import { 
-  ClaimDetailResponse, 
-  CreateClaimRequest, 
+import { TestBed } from '@angular/core/testing';
+import {
+  ClaimDetailResponse,
   ClaimResponse,
-  ClaimStatusRequest,
   ClaimStatusEnum,
-  ClaimStatusHistory,
-  ClaimAttachment
+  ClaimStatusRequest,
+  CreateClaimRequest
 } from '../models';
+import { ClaimApiService } from './claim-api.service';
 
 describe('ClaimApiService', () => {
   let service: ClaimApiService;
@@ -41,7 +39,7 @@ describe('ClaimApiService', () => {
           titulo: 'Test Claim',
           descripcion: 'Test Description',
           clienteId: 123,
-          estadoActual: ClaimStatusEnum.CREADO,
+          estadoActual: ClaimStatusEnum.INGRESADO,
           fechaCreacion: '2024-01-01T00:00:00Z',
           fechaActualizacion: '2024-01-01T00:00:00Z'
         }
@@ -65,7 +63,7 @@ describe('ClaimApiService', () => {
         title: 'Test Claim',
         description: 'Test Description',
         customerId: 123,
-        currentStatus: ClaimStatusEnum.CREADO,
+        currentStatus: ClaimStatusEnum.INGRESADO,
         createdAt: '2024-01-01T00:00:00Z',
         lastUpdated: '2024-01-01T00:00:00Z',
         statusHistory: [],
@@ -96,7 +94,7 @@ describe('ClaimApiService', () => {
         titulo: 'New Claim',
         descripcion: 'New Description',
         clienteId: 456,
-        estadoActual: ClaimStatusEnum.CREADO,
+        estadoActual: ClaimStatusEnum.INGRESADO,
         fechaCreacion: '2024-01-02T00:00:00Z',
         fechaActualizacion: '2024-01-02T00:00:00Z'
       };
@@ -116,7 +114,7 @@ describe('ClaimApiService', () => {
   describe('addStatusToClaim', () => {
     it('should add status to claim', () => {
       const statusRequest: ClaimStatusRequest = {
-        estado: ClaimStatusEnum.EN_PROCESO,
+        status: ClaimStatusEnum.EN_PROCESO,
         notas: 'Processing claim'
       };
 

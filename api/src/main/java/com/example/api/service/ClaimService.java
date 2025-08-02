@@ -4,6 +4,7 @@ import com.example.api.dto.CreateClaimRequest;
 import com.example.api.dto.ClaimStatusRequest;
 import com.example.api.dto.ClaimResponse;
 import com.example.api.dto.ClaimDetailResponse;
+import com.example.api.dto.PdfExportResponse;
 import com.example.api.entity.Reclamo;
 import com.example.api.entity.EstadoReclamo;
 import com.example.api.entity.AdjuntoReclamo;
@@ -18,9 +19,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
+import java.util.Base64;
 import java.util.stream.Collectors;
+import java.io.ByteArrayOutputStream;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 
 @Service
 @RequiredArgsConstructor
@@ -68,10 +80,34 @@ public class ClaimService {
                 
                 return reclamos.stream()
                                 .map(reclamo -> {
-                                        String currentStatus = reclamo.getEstados().stream()
+                                        EstadoReclamoEnum currentStatus = reclamo.getEstados().stream()
                                                         .max((e1, e2) -> e1.getFechaCreacion().compareTo(e2.getFechaCreacion()))
                                                         .map(EstadoReclamo::getEstado)
-                                                        .orElse("Sin estado");
+                                                        .orElse(EstadoReclamoEnum.INGRESADO);
+                                        
+                                        return new ClaimResponse(
+                                                        reclamo.getId(),
+                                                        reclamo.getTitulo(),
+                                                        reclamo.getDescripcion(),
+                                                        reclamo.getClienteId(),
+                                                        currentStatus,
+                                                        reclamo.getFechaCreacion(),
+                                                        reclamo.getFechaActualizacion()
+                                        );
+                                })
+                                .collect(Collectors.toList());
+        }
+
+        @Transactional(readOnly = true)
+        public List<ClaimResponse> getClaimsWithFilters(EstadoReclamoEnum status, String searchText) {
+                List<Reclamo> reclamos = reclamoRepository.findWithFilters(status, searchText);
+                
+                return reclamos.stream()
+                                .map(reclamo -> {
+                                        EstadoReclamoEnum currentStatus = reclamo.getEstados().stream()
+                                                        .max((e1, e2) -> e1.getFechaCreacion().compareTo(e2.getFechaCreacion()))
+                                                        .map(EstadoReclamo::getEstado)
+                                                        .orElse(EstadoReclamoEnum.INGRESADO);
                                         
                                         return new ClaimResponse(
                                                         reclamo.getId(),
@@ -110,10 +146,10 @@ public class ClaimService {
                                 ))
                                 .collect(Collectors.toList());
                 
-                String currentStatus = reclamo.getEstados().stream()
+                EstadoReclamoEnum currentStatus = reclamo.getEstados().stream()
                                 .max((e1, e2) -> e1.getFechaCreacion().compareTo(e2.getFechaCreacion()))
                                 .map(EstadoReclamo::getEstado)
-                                .orElse("Sin estado");
+                                .orElse(EstadoReclamoEnum.INGRESADO);
                 
                 return new ClaimDetailResponse(
                                 reclamo.getId(),
@@ -135,6 +171,7 @@ public class ClaimService {
                 
                 EstadoReclamo newStatus = EstadoReclamo.builder()
                                 .reclamo(reclamo)
+                                .asesor_email(request.asesor_email())
                                 .estado(request.status())
                                 .notas(request.notes())
                                 .build();
@@ -163,5 +200,70 @@ public class ClaimService {
                                 .build();
                 
                 adjuntoReclamoRepository.save(attachment);
+        }
+
+        @Transactional(readOnly = true)
+        public PdfExportResponse exportClaimsToPdf() {
+                try {
+                        List<Reclamo> reclamos = reclamoRepository.findAllWithLastStatus();
+                        
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        PdfWriter writer = new PdfWriter(baos);
+                        PdfDocument pdfDoc = new PdfDocument(writer);
+                        Document document = new Document(pdfDoc);
+                        
+                        document.add(new Paragraph("Reporte de Reclamos")
+                                        .setFontSize(18)
+                                        .setTextAlignment(TextAlignment.CENTER));
+                        
+                        document.add(new Paragraph("Generado el: " + 
+                                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")))
+                                        .setTextAlignment(TextAlignment.CENTER));
+                        
+                        document.add(new Paragraph(" "));
+                        
+                        // Define column widths: ID(1), Código(2), Título(3), Cliente ID(1.5), Estado(2), Fecha(2.5)
+                        float[] columnWidths = {1f, 2f, 3f, 1.5f, 2f, 2.5f};
+                        Table table = new Table(columnWidths);
+                        table.setWidth(UnitValue.createPercentValue(100));
+                        
+                        table.addHeaderCell(new Cell().add(new Paragraph("ID")).setTextAlignment(TextAlignment.CENTER));
+                        table.addHeaderCell(new Cell().add(new Paragraph("Código")).setTextAlignment(TextAlignment.CENTER));
+                        table.addHeaderCell(new Cell().add(new Paragraph("Título")).setTextAlignment(TextAlignment.CENTER));
+                        table.addHeaderCell(new Cell().add(new Paragraph("Cliente ID")).setTextAlignment(TextAlignment.CENTER));
+                        table.addHeaderCell(new Cell().add(new Paragraph("Estado")).setTextAlignment(TextAlignment.CENTER));
+                        table.addHeaderCell(new Cell().add(new Paragraph("Fecha Creación")).setTextAlignment(TextAlignment.CENTER));
+                        
+                        for (Reclamo reclamo : reclamos) {
+                                EstadoReclamoEnum currentStatus = reclamo.getEstados().stream()
+                                                .max((e1, e2) -> e1.getFechaCreacion().compareTo(e2.getFechaCreacion()))
+                                                .map(EstadoReclamo::getEstado)
+                                                .orElse(EstadoReclamoEnum.INGRESADO);
+                                
+                                table.addCell(new Cell().add(new Paragraph(String.valueOf(reclamo.getId()))));
+                                table.addCell(new Cell().add(new Paragraph(reclamo.getCodigo() != null ? reclamo.getCodigo() : "")));
+                                table.addCell(new Cell().add(new Paragraph(reclamo.getTitulo() != null ? reclamo.getTitulo() : "Sin título")));
+                                table.addCell(new Cell().add(new Paragraph(String.valueOf(reclamo.getClienteId()))));
+                                table.addCell(new Cell().add(new Paragraph(currentStatus.toString())));
+                                table.addCell(new Cell().add(new Paragraph(reclamo.getFechaCreacion()
+                                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")))));
+                        }
+                        
+                        document.add(table);
+                        
+                        document.add(new Paragraph(" "));
+                        document.add(new Paragraph("Total de reclamos: " + reclamos.size())
+                                        .setTextAlignment(TextAlignment.RIGHT));
+                        
+                        document.close();
+                        
+                        String base64Content = Base64.getEncoder().encodeToString(baos.toByteArray());
+                        String filename = "reclamos_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+                        
+                        return new PdfExportResponse(base64Content, filename, reclamos.size());
+                        
+                } catch (Exception e) {
+                        throw new RuntimeException("Error generating PDF: " + e.getMessage(), e);
+                }
         }
 }

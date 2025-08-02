@@ -60,8 +60,9 @@ export class ClaimDetailComponent implements OnInit {
     private snackBar: MatSnackBar,
   ) {
     this.statusForm = this.fb.group({
-      estado: ['', Validators.required],
-      notas: ['']
+      status: ['', Validators.required],
+      notas: [''],
+      asesor_email: ['', [Validators.email]]
     });
   }
 
@@ -93,11 +94,13 @@ export class ClaimDetailComponent implements OnInit {
 
   getStatusColor(status: string): string {
     switch (status) {
-      case ClaimStatusEnum.CREADO: return 'primary';
+      case ClaimStatusEnum.INGRESADO: return 'primary';
       case ClaimStatusEnum.EN_PROCESO: return 'accent';
       case ClaimStatusEnum.RESUELTO: return 'primary';
       case ClaimStatusEnum.CERRADO: return '';
-      case ClaimStatusEnum.CANCELADO: return 'warn';
+      case ClaimStatusEnum.RECHAZADO: return 'warn';
+      case ClaimStatusEnum.ESCALADO: return 'warn';
+      case ClaimStatusEnum.PENDIENTE_INFORMACION: return 'accent';
       default: return '';
     }
   }
@@ -115,8 +118,9 @@ export class ClaimDetailComponent implements OnInit {
       
       try {
         const statusData: ClaimStatusRequest = {
-          estado: this.statusForm.value.estado,
-          notas: this.statusForm.value.notas || undefined
+          status: this.statusForm.value.status,
+          notas: this.statusForm.value.notas || undefined,
+          asesor_email: this.statusForm.value.asesor_email || undefined
         };
 
         await firstValueFrom(this.claimService.addStatusToClaim(this.claimId(), statusData));

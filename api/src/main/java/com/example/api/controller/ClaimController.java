@@ -4,6 +4,8 @@ import com.example.api.dto.CreateClaimRequest;
 import com.example.api.dto.ClaimStatusRequest;
 import com.example.api.dto.ClaimResponse;
 import com.example.api.dto.ClaimDetailResponse;
+import com.example.api.dto.PdfExportResponse;
+import com.example.api.enums.EstadoReclamoEnum;
 import com.example.api.service.ClaimService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,11 +43,21 @@ public class ClaimController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all claims", description = "Retrieves all claims with their most recent status")
+    @Operation(summary = "Get all claims", description = "Retrieves all claims with optional filtering by status and text search")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Claims retrieved successfully")
     })
-    public ResponseEntity<List<ClaimResponse>> getAllClaims() {
+    public ResponseEntity<List<ClaimResponse>> getAllClaims(
+            @Parameter(description = "Filter by claim status (optional)")
+            @RequestParam(required = false) EstadoReclamoEnum status,
+            @Parameter(description = "Search text in title, description or code (optional)")
+            @RequestParam(required = false) String search) {
+        
+        if (status != null || (search != null && !search.trim().isEmpty())) {
+            List<ClaimResponse> claims = claimService.getClaimsWithFilters(status, search);
+            return ResponseEntity.ok(claims);
+        }
+        
         List<ClaimResponse> claims = claimService.getAllClaimsWithLastStatus();
         return ResponseEntity.ok(claims);
     }
@@ -92,5 +104,16 @@ public class ClaimController {
             @RequestParam("file") MultipartFile file) {
         claimService.addAttachmentToClaim(id, file);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/export/pdf")
+    @Operation(summary = "Export claims to PDF", description = "Exports all claims to a PDF file and returns it as base64 encoded content")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF generated successfully"),
+            @ApiResponse(responseCode = "500", description = "Error generating PDF")
+    })
+    public ResponseEntity<PdfExportResponse> exportClaimsToPdf() {
+        PdfExportResponse pdfResponse = claimService.exportClaimsToPdf();
+        return ResponseEntity.ok(pdfResponse);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.api.entity;
 
 import com.example.api.enums.EstadoReclamoEnum;
+import com.example.api.converter.EstadoReclamoConverter;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,16 +26,20 @@ public class EstadoReclamo {
     @JoinColumn(name = "reclamo_id", nullable = false)
     private Reclamo reclamo;
     
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = EstadoReclamoConverter.class)
     @Column(nullable = false)
     private EstadoReclamoEnum estado;
     
     @Column(columnDefinition = "TEXT")
     private String notas;
-    
+
+    @Column(columnDefinition = "TEXT")
+    private String asesor_email;
+
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
-    
+
+
     @PrePersist
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();

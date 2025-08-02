@@ -49,4 +49,27 @@ public interface ReclamoRepository extends JpaRepository<Reclamo, Long> {
            ") " +
            "ORDER BY r.fechaCreacion DESC")
     List<Reclamo> findByCurrentStatus(@Param("estado") EstadoReclamoEnum estado);
+    
+    /**
+     * Busca reclamos con filtros opcionales de estado y búsqueda de texto
+     */
+    @Query("SELECT DISTINCT r FROM Reclamo r " +
+           "LEFT JOIN FETCH r.estados e " +
+           "WHERE (:estado IS NULL OR EXISTS (" +
+           "    SELECT 1 FROM EstadoReclamo e2 " +
+           "    WHERE e2.reclamo.id = r.id " +
+           "    AND e2.estado = :estado " +
+           "    AND e2.fechaCreacion = (" +
+           "        SELECT MAX(e3.fechaCreacion) " +
+           "        FROM EstadoReclamo e3 " +
+           "        WHERE e3.reclamo.id = r.id" +
+           "    )" +
+           ")) " +
+           "AND (:searchText IS NULL OR :searchText = '' OR " +
+           "    LOWER(r.titulo) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
+           "    LOWER(r.descripcion) LIKE LOWER(CONCAT('%', :searchText, '%')) OR " +
+           "    LOWER(r.codigo) LIKE LOWER(CONCAT('%', :searchText, '%'))" +
+           ") " +
+           "ORDER BY r.fechaCreacion DESC")
+    List<Reclamo> findWithFilters(@Param("estado") EstadoReclamoEnum estado, @Param("searchText") String searchText);
 }
